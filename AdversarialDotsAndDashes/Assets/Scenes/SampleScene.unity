@@ -383,6 +383,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shape: {x: 10, y: 10}
   dotPrefab: {fileID: 2257187544762420308, guid: 04fa11f94db304351a5324eb36e9b04f, type: 3}
+  linePrefab: {fileID: 8017340929187280312, guid: fc001a011a6a94988be8040252641602, type: 3}
   spaceBetweenDots: 2
 --- !u!4 &2099022791
 Transform:
