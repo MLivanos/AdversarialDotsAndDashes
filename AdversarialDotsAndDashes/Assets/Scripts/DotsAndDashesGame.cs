@@ -4,16 +4,40 @@ using UnityEngine;
 
 public class DotsAndDashesGame : MonoBehaviour
 {
+    [SerializeField] private Color[] playerColors = new Color[2];
     [SerializeField] private Vector2Int shape;
     [SerializeField] private GameObject dotPrefab;
     [SerializeField] private GameObject linePrefab;
     [SerializeField] private float spaceBetweenDots;
     int[,] gameMatrix;
     GameObject[,] gameMatrixObjects;
+    int turnPlayer;
 
     private void Start()
     {
         Initialize();
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            CheckForLine();
+        }
+    }
+
+    private void CheckForLine()
+    {
+        RaycastHit raycastHit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out raycastHit, 10f))
+        {
+            if (raycastHit.transform.tag == "line")
+            {
+                ChangeLineOwnership(raycastHit.transform.gameObject);
+                turnPlayer = 1 - turnPlayer;
+            }
+        }
     }
 
     public void Initialize()
@@ -51,5 +75,11 @@ public class DotsAndDashesGame : MonoBehaviour
         {
             Instantiate(linePrefab, position + Vector3.up, Quaternion.identity);
         }
+    }
+
+    public void ChangeLineOwnership(GameObject line)
+    {
+        Renderer lineRenderer = line.GetComponent<Renderer>();
+        lineRenderer.material.SetColor("_BaseColor", playerColors[turnPlayer]);
     }
 }

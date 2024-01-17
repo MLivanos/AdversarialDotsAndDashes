@@ -381,6 +381,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9729b0d6b829d44eabd93b73aa13580d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerColors:
+  - {r: 0.09743297, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0.890615, a: 1}
   shape: {x: 10, y: 10}
   dotPrefab: {fileID: 2257187544762420308, guid: 04fa11f94db304351a5324eb36e9b04f, type: 3}
   linePrefab: {fileID: 8017340929187280312, guid: fc001a011a6a94988be8040252641602, type: 3}
