@@ -9,6 +9,7 @@ public class DotsAndDashesGame : MonoBehaviour
     [SerializeField] private Vector2Int shape;
     [SerializeField] private GameObject dotPrefab;
     [SerializeField] private GameObject linePrefab;
+    [SerializeField] private GameObject boxPrefab;
     [SerializeField] private float spaceBetweenDots;
     GameObject[,] gameMatrixObjectsHorizontal;
     GameObject[,] gameMatrixObjectsVertical;
@@ -123,7 +124,7 @@ public class DotsAndDashesGame : MonoBehaviour
         }
     }
 
-    private void CheckBox(int i, int j, bool positveOffset, bool vertical)
+    private bool CheckBox(int i, int j, bool positveOffset, bool vertical)
     {
         int offset = positveOffset ? 1 : -1;
         Vector2Int deltaAxis = vertical ? new Vector2Int(offset, 0) : new Vector2Int(0, offset);
@@ -140,28 +141,21 @@ public class DotsAndDashesGame : MonoBehaviour
 
         if (oppositeLine.IsClaimed() && minorLine1.IsClaimed() && minorLine2.IsClaimed())
         {
-            ClaimBox(i,j,offset,offset);
+            ClaimBox((minorLine1.transform.position + minorLine2.transform.position) / 2);
+            return true;
         }
-    }
-
-    private bool IsSquared(int i, int j, int xOffset, int yOffset, bool vertical)
-    {
-        if (vertical)
-        {
-            return gameMatrixHorizontal[i+xOffset,j] != 0 && gameMatrixHorizontal[i,j] != 0 && gameMatrixVertical[i,j+yOffset] != 0;
-        }
-        return gameMatrixVertical[i,j] != 0 && gameMatrixVertical[i,j+yOffset] != 0 && gameMatrixHorizontal[i+xOffset,j] != 0;
-    }
-
-    private bool IsClaimed(int i, int j, int xOffset, int yOffset)
-    {
-        //return claimedBoxes[i+xOffset,j+yOffset] && claimedBoxes[i+xOffset,j+yOffset] && claimedBoxes[i+xOffset,j+yOffset];
         return false;
     }
 
-    private void ClaimBox(int i, int j, int xOffset, int yOffset)
+    private void ClaimBox(Vector3 boxPosition)
     {
-        Debug.Log("claimed");
+        GameObject newBox = Instantiate(boxPrefab);
+        newBox.transform.localScale = new Vector3(spaceBetweenDots, spaceBetweenDots, 0);
+        newBox.transform.position = boxPosition;
+        Renderer boxRenderer = newBox.GetComponent<Renderer>();
+        Color32 semiTransparentColor = playerColors[turnPlayer];
+        semiTransparentColor.a = 50;
+        boxRenderer.material.SetColor("_Color", semiTransparentColor);
     }
 
     private void CheckForNulls(GameObject[,] matrix)
