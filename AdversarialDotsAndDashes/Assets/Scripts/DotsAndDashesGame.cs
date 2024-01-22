@@ -113,7 +113,7 @@ public class DotsAndDashesGame : MonoBehaviour
 
     private void CheckForNewBox(int i, int j, bool vertical)
     {
-        if (i < shape.x && j < shape.y && vertical)
+        if (i < shape.x && j < shape.y)
         {
             CheckBox(i,j,true,true, vertical);
         }
