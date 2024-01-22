@@ -17,6 +17,7 @@ public class DotsAndDashesGame : MonoBehaviour
     int[,] gameMatrixVertical;
     bool[,] claimedBoxes;
     int turnPlayer = 1;
+    bool switchPlayer = false;
 
     private void Start()
     {
@@ -29,6 +30,10 @@ public class DotsAndDashesGame : MonoBehaviour
         {
             CheckForLine();
         }
+        if (switchPlayer)
+        {
+            ChangeTurnPlayer();
+        }
     }
 
     private void CheckForLine()
@@ -40,9 +45,14 @@ public class DotsAndDashesGame : MonoBehaviour
             if (raycastHit.transform.tag == "line")
             {
                 ChangeLineOwnership(raycastHit.transform.gameObject);
-                turnPlayer = 1 - turnPlayer;
             }
         }
+    }
+
+    private void ChangeTurnPlayer()
+    {
+        turnPlayer = 1 - turnPlayer;
+        switchPlayer = false;
     }
 
     public void Initialize()
@@ -94,10 +104,14 @@ public class DotsAndDashesGame : MonoBehaviour
 
     public void ChangeLineOwnership(GameObject line)
     {
-        Renderer lineRenderer = line.GetComponent<Renderer>();
         Line lineScript = line.GetComponent<Line>();
-        lineRenderer.material.SetColor("_BaseColor", playerColors[turnPlayer]);
+        if (lineScript.IsClaimed())
+        {
+            return;
+        }
         Vector2Int position = lineScript.GetGridPosition();
+        Renderer lineRenderer = line.GetComponent<Renderer>();
+        lineRenderer.material.SetColor("_BaseColor", playerColors[turnPlayer]);
         if (lineScript.IsVertical())
         {
             gameMatrixVertical[position.x,position.y] = turnPlayer;
@@ -107,21 +121,13 @@ public class DotsAndDashesGame : MonoBehaviour
             gameMatrixHorizontal[position.x,position.y] = turnPlayer;
         }
         lineScript.SetClaimed(true);
-        //Debug.Log(position);
-        //Debug.Log(gameMatrix[position.x,position.y]);
         CheckForNewBox(position.x, position.y, lineScript.IsVertical());
     }
 
     private void CheckForNewBox(int i, int j, bool vertical)
     {
-        if (i < shape.x && j < shape.y)
-        {
-            CheckBox(i,j,true, vertical);
-        }
-        if (i > 0 && j < shape.y)
-        {
-            CheckBox(i,j,false, vertical);
-        }
+        switchPlayer = !CheckBox(i,j,true, vertical);
+        switchPlayer = switchPlayer || !CheckBox(i,j,false, vertical);
     }
 
     private bool CheckBox(int i, int j, bool positveOffset, bool vertical)
