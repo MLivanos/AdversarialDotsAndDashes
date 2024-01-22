@@ -115,44 +115,32 @@ public class DotsAndDashesGame : MonoBehaviour
     {
         if (i < shape.x && j < shape.y)
         {
-            CheckBox(i,j,true,true, vertical);
+            CheckBox(i,j,true, vertical);
         }
         if (i > 0 && j < shape.y)
         {
-            CheckBox(i,j,false,true, vertical);
+            CheckBox(i,j,false, vertical);
         }
     }
 
-    private void CheckBox(int i, int j, bool right, bool up, bool vertical)
+    private void CheckBox(int i, int j, bool positveOffset, bool vertical)
     {
-        int xOffset = right ? 1 : -1;
-        Vector2Int deltaAxis = vertical ? new Vector2Int(xOffset, 0) : new Vector2Int(0, xOffset);
+        int offset = positveOffset ? 1 : -1;
+        Vector2Int deltaAxis = vertical ? new Vector2Int(offset, 0) : new Vector2Int(0, offset);
         GameObject[,] majorAxis = vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
         GameObject[,] minorAxis = !vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
         
         Vector2Int oppositeLineCoordinates = new Vector2Int(i,j) + deltaAxis;
-        Vector2Int minorLine1Coordinates = new Vector2Int(i,j) - deltaAxis * new Vector2Int((xOffset - 1) / 2, (xOffset - 1) / 2);
+        Vector2Int minorLine1Coordinates = new Vector2Int(i,j) - deltaAxis * new Vector2Int((offset - 1) / 2, (offset - 1) / 2);
         Vector2Int minorLine2Coordinates = minorLine1Coordinates + new Vector2Int(Mathf.Abs(deltaAxis.y), Mathf.Abs(deltaAxis.x));
 
         Line oppositeLine = majorAxis[oppositeLineCoordinates.x, oppositeLineCoordinates.y].GetComponent<Line>();
         Line minorLine1 = minorAxis[minorLine1Coordinates.x, minorLine1Coordinates.y].GetComponent<Line>();
         Line minorLine2 = minorAxis[minorLine2Coordinates.x, minorLine2Coordinates.y].GetComponent<Line>();
 
-        Debug.Log("==========");
-        Debug.Log(oppositeLineCoordinates);
-        Debug.Log(minorLine1Coordinates);
-        Debug.Log(minorLine2Coordinates);
-
-        Renderer lineRenderer1 = oppositeLine.gameObject.GetComponent<Renderer>();
-        Renderer lineRenderer2 = minorLine1.gameObject.GetComponent<Renderer>();
-        Renderer lineRenderer3 = minorLine2.gameObject.GetComponent<Renderer>();
-        lineRenderer1.material.SetColor("_BaseColor", new Color32(255, 215, 0, 255));
-        lineRenderer2.material.SetColor("_BaseColor", new Color32(255, 215, 0, 255));
-        lineRenderer3.material.SetColor("_BaseColor", new Color32(255, 215, 0, 255));
-
         if (oppositeLine.IsClaimed() && minorLine1.IsClaimed() && minorLine2.IsClaimed())
         {
-            ClaimBox(i,j,xOffset,xOffset);
+            ClaimBox(i,j,offset,offset);
         }
     }
 
