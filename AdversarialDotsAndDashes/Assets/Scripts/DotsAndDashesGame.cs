@@ -135,6 +135,11 @@ public class DotsAndDashesGame : MonoBehaviour
         Vector2Int minorLine1Coordinates = new Vector2Int(i,j) - deltaAxis * new Vector2Int((offset - 1) / 2, (offset - 1) / 2);
         Vector2Int minorLine2Coordinates = minorLine1Coordinates + new Vector2Int(Mathf.Abs(deltaAxis.y), Mathf.Abs(deltaAxis.x));
 
+        if (!IndicesInBounds(oppositeLineCoordinates, minorLine1Coordinates, minorLine2Coordinates, majorAxis, minorAxis))
+        {
+            return false;
+        }
+
         Line oppositeLine = majorAxis[oppositeLineCoordinates.x, oppositeLineCoordinates.y].GetComponent<Line>();
         Line minorLine1 = minorAxis[minorLine1Coordinates.x, minorLine1Coordinates.y].GetComponent<Line>();
         Line minorLine2 = minorAxis[minorLine2Coordinates.x, minorLine2Coordinates.y].GetComponent<Line>();
@@ -145,6 +150,14 @@ public class DotsAndDashesGame : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private bool IndicesInBounds(Vector2Int majorIndices, Vector2Int minorIndices1, Vector2Int minorIndices2, GameObject[,] majorAxis, GameObject[,] minorAxis)
+    {
+        bool majorOutOfBounds = majorIndices.x >= 0 && majorIndices.y >= 0 && majorIndices.x < majorAxis.GetLength(0) && majorIndices.y < majorAxis.GetLength(1);
+        bool minor1OutOfBounds = minorIndices1.x >= 0 && minorIndices1.y >= 0 && minorIndices1.x < minorAxis.GetLength(0) && minorIndices1.y < minorAxis.GetLength(1);
+        bool minor2OutOfBounds = minorIndices2.x >= 0 && minorIndices2.y >= 0 && minorIndices2.x < minorAxis.GetLength(0) && minorIndices2.y < minorAxis.GetLength(1);
+        return majorOutOfBounds && minor1OutOfBounds && minor2OutOfBounds;
     }
 
     private void ClaimBox(Vector3 boxPosition)
