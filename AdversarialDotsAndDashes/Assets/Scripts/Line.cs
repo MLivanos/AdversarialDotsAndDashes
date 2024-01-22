@@ -7,6 +7,7 @@ public class Line : MonoBehaviour
     private int xIndex;
     private int yIndex;
     private bool isVertical;
+    private bool isClaimed;
 
     public void SetVetical(bool vertical)
     {
@@ -19,6 +20,11 @@ public class Line : MonoBehaviour
         yIndex = y;
     }
 
+    public void SetClaimed(bool claimed)
+    {
+        isClaimed = claimed;
+    }
+
     public Vector2Int GetGridPosition()
     {
         return new Vector2Int(xIndex,yIndex);
@@ -27,5 +33,10 @@ public class Line : MonoBehaviour
     public bool IsVertical()
     {
         return isVertical;
+    }
+
+    public bool IsClaimed()
+    {
+        return isClaimed;
     }
 }
