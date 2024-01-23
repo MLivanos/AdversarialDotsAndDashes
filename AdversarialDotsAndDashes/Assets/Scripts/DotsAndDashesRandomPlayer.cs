@@ -6,6 +6,7 @@ public class DotsAndDashesRandomPlayer : DotsAndDashesPlayer
 {
     public override void Play(CompactBoard representation)
     {
-        return;
+        DotsAndDashesMove move = representation.GetRandomMove();
+        game.RecieveMove(move);
     }
 }
