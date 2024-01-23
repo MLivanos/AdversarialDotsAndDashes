@@ -65,8 +65,8 @@ public class DotsAndDashesGame : MonoBehaviour
     private void ChangeTurnPlayer()
     {
         turnPlayer = 1 - turnPlayer;
-        players[turnPlayer].Play(GetCompactRepresentation());
         switchPlayer = false;
+        players[turnPlayer].Play(GetCompactRepresentation());
     }
 
     public void Initialize()

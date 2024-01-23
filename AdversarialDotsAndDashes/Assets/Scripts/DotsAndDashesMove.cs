@@ -31,4 +31,15 @@ public class DotsAndDashesMove
     {
         return moveList.Count == 0;
     }
+
+    public void Concatenate(DotsAndDashesMove other, bool reverse=false)
+    {
+        List<(int,int,bool)> front = reverse ? other.GetMove() : moveList;
+        List<(int,int,bool)> back = !reverse ? other.GetMove() : moveList;
+        foreach((int,int,bool) element in back)
+        {
+            front.Add(element);
+        }
+        moveList = front;
+    }
 }

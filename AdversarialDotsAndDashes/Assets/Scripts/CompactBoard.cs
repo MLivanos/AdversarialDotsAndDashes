@@ -63,41 +63,72 @@ public class CompactBoard
     public DotsAndDashesMove GetRandomMove(bool restricted=false)
     {
         DotsAndDashesMove move = new DotsAndDashesMove();
-        while(!finished)
-        {
-            AddRandomMove(move, restricted);
-            (int, int, bool) recent = move.GetLastMove();
-            SimulateMove(recent.Item1, recent.Item2, recent.Item3);
-        }
+        AddRandomMove(move, restricted);
         return move;
     }
 
     private void AddRandomMove(DotsAndDashesMove move, bool restricted=false)
     {
-        List<(int, int)> verticalMoves = GetNeighborsByMatrix(true, restricted);
-        List<(int, int)> horizontalMoves = GetNeighborsByMatrix(false, restricted);
+        List<DotsAndDashesMove> verticalMoves = GetNeighborsByMatrix(true, restricted);
+        List<DotsAndDashesMove> horizontalMoves = GetNeighborsByMatrix(false, restricted);
         int index = Random.Range(0, verticalMoves.Count + horizontalMoves.Count - 1);
         bool vertical = index < verticalMoves.Count;
         int indexOffset = vertical ? 0 : verticalMoves.Count;
-        List<(int, int)> moveSet = vertical ? verticalMoves : horizontalMoves;
-        move.AddMove((moveSet[index - indexOffset].Item1, moveSet[index - indexOffset].Item2, vertical));
+        List<DotsAndDashesMove> moveSet = vertical ? verticalMoves : horizontalMoves;
+        move.Concatenate(moveSet[index - indexOffset]);
     }
 
-    public List<(int, int)> GetNeighborsByMatrix(bool vertical, bool restricted=false)
+    public List<DotsAndDashesMove> GetNeighborsByMatrix(bool vertical, bool restricted=false, bool recursive=false)
     {
         bool[,] matrix = vertical ? verticalLines : horizontalLines;
-        List<(int,int)> availableSpaces = new List<(int, int)>();
+        List<DotsAndDashesMove> availableSpaces = new List<DotsAndDashesMove>();
         for(int i =0; i<matrix.GetLength(0); i++)
         {
             for(int j = 0; j<matrix.GetLength(1); j++)
             {
                 if(SpaceAvailable(i,j,vertical,restricted))
                 {
-                    availableSpaces.Add((i,j));
+                    AddToNeighbors(i, j, vertical, recursive, restricted, availableSpaces);
                 }
             }
         }
         return availableSpaces;
+    }
+
+    private void AddToNeighbors(int i, int j, bool vertical, bool recursive, bool restricted, List<DotsAndDashesMove> availableSpaces)
+    {
+        DotsAndDashesMove newMove = CreateNewMove(i,j,vertical);
+        if(recursive && CheckForNewBox(i,j,vertical))
+        {
+            CompactBoard newBoard = new CompactBoard();
+            newBoard.InitializeRepresentation(verticalLines, horizontalLines, game);
+            newBoard.SimulateMove(i,j,vertical);
+            List<DotsAndDashesMove> additionalRoutesVertical = newBoard.GetNeighborsByMatrix(true, restricted, recursive);
+            List<DotsAndDashesMove> additionalRoutesHorizontal = newBoard.GetNeighborsByMatrix(false, restricted, recursive);
+            foreach(DotsAndDashesMove route in additionalRoutesVertical)
+            {
+                newMove = CreateNewMove(i,j,vertical);
+                newMove.Concatenate(route);
+                availableSpaces.Add(newMove);
+            }
+            foreach(DotsAndDashesMove route in additionalRoutesHorizontal)
+            {
+                newMove = CreateNewMove(i,j,vertical);
+                newMove.Concatenate(route);
+                availableSpaces.Add(newMove);
+            }
+        }
+        else
+        {
+            availableSpaces.Add(newMove);
+        }
+    }
+
+    private DotsAndDashesMove CreateNewMove(int i, int j, bool vertical)
+    {
+        DotsAndDashesMove newMove = new DotsAndDashesMove();
+        newMove.AddMove((i,j,vertical));
+        return newMove;
     }
 
     public bool SpaceAvailable(int i, int j, bool vertical, bool restricted=false)
