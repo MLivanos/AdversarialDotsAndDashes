@@ -6,15 +6,17 @@ using UnityEngine;
 public class DotsAndDashesGame : MonoBehaviour
 {
     [SerializeField] private Color[] playerColors = new Color[2];
+    [SerializeField] private Color unclaimedColor;
     [SerializeField] private Vector2Int shape;
     [SerializeField] private GameObject dotPrefab;
     [SerializeField] private GameObject linePrefab;
     [SerializeField] private GameObject boxPrefab;
     [SerializeField] private float spaceBetweenDots;
-    GameObject[,] gameMatrixObjectsHorizontal;
-    GameObject[,] gameMatrixObjectsVertical;
+    private GameObject[,] gameMatrixObjectsHorizontal;
+    private GameObject[,] gameMatrixObjectsVertical;
+    private List<GameObject> instantiatedBoxes = new List<GameObject>();
     bool[,] claimedBoxes;
-    Vector2Int playerScores = Vector2Int.zero;
+    private Vector2Int playerScores = Vector2Int.zero;
     int turnPlayer = 1;
     int nLinesClaimed;
     bool switchPlayer = false;
@@ -33,6 +35,10 @@ public class DotsAndDashesGame : MonoBehaviour
         if (switchPlayer)
         {
             ChangeTurnPlayer();
+        }
+        if (Input.GetKeyDown("r"))
+        {
+            Restart();
         }
     }
 
@@ -73,7 +79,34 @@ public class DotsAndDashesGame : MonoBehaviour
                 GameObject newDot = Instantiate(dotPrefab, position + Vector3.back, Quaternion.identity);
             }
         }
-        Camera.main.orthographicSize = Mathf.Max(shape.x, shape.x);
+        ClearLines(gameMatrixObjectsHorizontal);
+        ClearLines(gameMatrixObjectsVertical);
+        Camera.main.orthographicSize = Mathf.Max(shape.x, shape.y);
+    }
+
+    private void Restart()
+    {
+        playerScores = Vector2Int.zero;
+        foreach(GameObject box in instantiatedBoxes)
+        {
+            Destroy(box);
+        }
+        ClearLines(gameMatrixObjectsHorizontal);
+        ClearLines(gameMatrixObjectsVertical);
+    }
+
+    private void ClearLines(GameObject[,] lineMatrix)
+    {
+        for (int i=0; i < lineMatrix.GetLength(0); i++)
+        {
+            for (int j=0; j < lineMatrix.GetLength(1); j++)
+            {
+                Renderer lineRenderer = lineMatrix[i,j].GetComponent<Renderer>();
+                lineRenderer.material.SetColor("_BaseColor", unclaimedColor);
+                Line lineScript = lineMatrix[i,j].GetComponent<Line>();
+                lineScript.SetClaimed(false);
+            }
+        }
     }
 
     private void AddLine(Vector3 position, int i, int j, bool vertical)
@@ -163,6 +196,7 @@ public class DotsAndDashesGame : MonoBehaviour
         playerScores[turnPlayer] += 1;
         Debug.Log(playerScores);
         GameObject newBox = Instantiate(boxPrefab);
+        instantiatedBoxes.Add(newBox);
         newBox.transform.localScale = new Vector3(spaceBetweenDots, spaceBetweenDots, 0);
         newBox.transform.position = boxPosition;
         Renderer boxRenderer = newBox.GetComponent<Renderer>();
