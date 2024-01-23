@@ -10,6 +10,13 @@ public class DotsAndDashesMove
         return moveList;
     }
 
+    public (int,int,bool) PopMove()
+    {
+        (int,int,bool) move = moveList[0];
+        moveList.RemoveAt(0);
+        return move;
+    }
+
     public (int,int,bool) GetLastMove()
     {
         return moveList[moveList.Count - 1];
@@ -18,5 +25,10 @@ public class DotsAndDashesMove
     public void AddMove((int,int,bool) move)
     {
         moveList.Add(move);
+    }
+
+    public bool IsEmpty()
+    {
+        return moveList.Count == 0;
     }
 }

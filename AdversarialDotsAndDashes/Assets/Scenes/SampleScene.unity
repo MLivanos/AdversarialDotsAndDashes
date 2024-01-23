@@ -390,6 +390,9 @@ MonoBehaviour:
   linePrefab: {fileID: 8017340929187280312, guid: fc001a011a6a94988be8040252641602, type: 3}
   boxPrefab: {fileID: 6029801645283580034, guid: 98b2304885953481a880e37a75878af3, type: 3}
   spaceBetweenDots: 2
+  playersPrefab:
+  - {fileID: 2038653818080163169, guid: 2eb07781f0cca42c5bd2198dc3e05d43, type: 3}
+  - {fileID: 2038653818080163169, guid: 2eb07781f0cca42c5bd2198dc3e05d43, type: 3}
 --- !u!4 &2099022791
 Transform:
   m_ObjectHideFlags: 0

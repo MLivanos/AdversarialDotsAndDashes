@@ -4,17 +4,16 @@ using UnityEngine;
 
 public abstract class DotsAndDashesPlayer : MonoBehaviour
 {
-    [SerializeField] int seed;
-    int position;
-    int opponentPosition;
+    [SerializeField] protected int seed;
+    protected DotsAndDashesGame game;
+    protected DotsAndDashesMove move;
+    protected CompactBoard board;
+    protected int position;
+    protected int opponentPosition;
 
-    private void Start()
+    public void Initialize(int playerPosition, DotsAndDashesGame game_, int randomSeed=-1)
     {
-
-    }
-
-    public void Initialize(int playerPosition, int randomSeed=-1)
-    {
+        game = game_;
         position = playerPosition;
         opponentPosition = 1 - position;
         if (randomSeed == -1)
@@ -24,8 +23,8 @@ public abstract class DotsAndDashesPlayer : MonoBehaviour
         Random.InitState(seed);
     }
 
-    public virtual DotsAndDashesMove Play()
+    public virtual void Play(CompactBoard representation)
     {
-        return null;
+        return;
     }
 }

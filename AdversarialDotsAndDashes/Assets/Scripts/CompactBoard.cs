@@ -9,7 +9,7 @@ public class CompactBoard
     bool[,] verticalLines;
     bool finished = false;
 
-    public void InitializeRepresentation(bool[,] horizontal, bool[,] vertical, DotsAndDashesGame gameReference)
+    public void InitializeRepresentation(bool[,] vertical, bool[,] horizontal, DotsAndDashesGame gameReference)
     {
         horizontalLines = horizontal;
         verticalLines = vertical;
@@ -83,7 +83,7 @@ public class CompactBoard
         move.AddMove((moveSet[index - indexOffset].Item1, moveSet[index - indexOffset].Item2, vertical));
     }
 
-    public List<(int, int)> GetNeighborsByMatrix(bool vertical, bool restricted)
+    public List<(int, int)> GetNeighborsByMatrix(bool vertical, bool restricted=false)
     {
         bool[,] matrix = vertical ? verticalLines : horizontalLines;
         List<(int,int)> availableSpaces = new List<(int, int)>();
@@ -100,7 +100,7 @@ public class CompactBoard
         return availableSpaces;
     }
 
-    private bool SpaceAvailable(int i, int j, bool vertical, bool restricted)
+    public bool SpaceAvailable(int i, int j, bool vertical, bool restricted=false)
     {
         bool[,] majorAxis = vertical ? verticalLines : horizontalLines;
         bool[,] minorAxis = !vertical ? verticalLines : horizontalLines;
@@ -129,5 +129,10 @@ public class CompactBoard
             return false;
         }
         return matrix[i,j];
+    }
+
+    public bool IsFinished()
+    {
+        return finished;
     }
 }

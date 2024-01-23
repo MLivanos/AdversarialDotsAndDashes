@@ -12,6 +12,8 @@ public class DotsAndDashesGame : MonoBehaviour
     [SerializeField] private GameObject linePrefab;
     [SerializeField] private GameObject boxPrefab;
     [SerializeField] private float spaceBetweenDots;
+    [SerializeField] private GameObject[] playersPrefab;
+    private DotsAndDashesPlayer[] players;
     private GameObject[,] gameMatrixObjectsHorizontal;
     private GameObject[,] gameMatrixObjectsVertical;
     private List<GameObject> instantiatedBoxes = new List<GameObject>();
@@ -19,19 +21,22 @@ public class DotsAndDashesGame : MonoBehaviour
     private Vector2Int playerScores = Vector2Int.zero;
     int turnPlayer = 1;
     int nLinesClaimed;
-    bool switchPlayer = false;
+    bool switchPlayer = true;
 
     private void Start()
     {
+        players = new DotsAndDashesPlayer[2];
+        GameObject player1Object = Instantiate(playersPrefab[0]);
+        GameObject player2Object = Instantiate(playersPrefab[1]);
+        players[0] = player1Object.GetComponent<DotsAndDashesPlayer>();
+        players[1] = player2Object.GetComponent<DotsAndDashesPlayer>();
+        players[0].Initialize(0,this);
+        players[1].Initialize(1,this);
         Initialize();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            CheckForLine();
-        }
         if (switchPlayer)
         {
             ChangeTurnPlayer();
@@ -42,22 +47,25 @@ public class DotsAndDashesGame : MonoBehaviour
         }
     }
 
-    private void CheckForLine()
+    public void RecieveMove(DotsAndDashesMove move)
     {
-        RaycastHit raycastHit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out raycastHit, 10f))
+        while (!switchPlayer && !move.IsEmpty())
         {
-            if (raycastHit.transform.tag == "line")
-            {
-                ChangeLineOwnership(raycastHit.transform.gameObject);
-            }
+            (int, int, bool) lineClaimed = move.PopMove();
+            GameObject[,] matrix = lineClaimed.Item3 ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+            GameObject line = matrix[lineClaimed.Item1,lineClaimed.Item2];
+            ChangeLineOwnership(line);
+        }
+        if (!switchPlayer)
+        {
+            players[turnPlayer].Play(GetCompactRepresentation());
         }
     }
 
     private void ChangeTurnPlayer()
     {
         turnPlayer = 1 - turnPlayer;
+        players[turnPlayer].Play(GetCompactRepresentation());
         switchPlayer = false;
     }
 
@@ -216,5 +224,32 @@ public class DotsAndDashesGame : MonoBehaviour
     private bool IsGameOver()
     {
         return nLinesClaimed == gameMatrixObjectsHorizontal.GetLength(0) * gameMatrixObjectsHorizontal.GetLength(1) + gameMatrixObjectsVertical.GetLength(0) * gameMatrixObjectsVertical.GetLength(1);
+    }
+
+    public CompactBoard GetCompactRepresentation()
+    {
+        CompactBoard representation = new CompactBoard();
+        bool[,] claimedVertical = GetClaimedMatrix(true);
+        bool[,] claimedHorizontal = GetClaimedMatrix(false);
+        representation.InitializeRepresentation(claimedVertical, claimedHorizontal, this);
+        return representation;
+    }
+
+    private bool[,] GetClaimedMatrix(bool vertical)
+    {
+        GameObject[,] gameObjectMatrix = vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        bool[,] matrix = new bool[gameObjectMatrix.GetLength(0),gameObjectMatrix.GetLength(1)];
+        for (int i=0; i<matrix.GetLength(0); i++)
+        {
+            for(int j=0; j<matrix.GetLength(1); j++)
+            {
+                Line lineScript = gameObjectMatrix[i,j].GetComponent<Line>();
+                if (lineScript.IsClaimed())
+                {
+                    matrix[i,j] = true;
+                }
+            }
+        }
+        return matrix;
     }
 }
