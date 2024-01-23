@@ -16,6 +16,7 @@ public class DotsAndDashesGame : MonoBehaviour
     int[,] gameMatrixHorizontal;
     int[,] gameMatrixVertical;
     bool[,] claimedBoxes;
+    Vector2Int playerScores = Vector2Int.zero;
     int turnPlayer = 1;
     bool switchPlayer = false;
 
@@ -126,8 +127,9 @@ public class DotsAndDashesGame : MonoBehaviour
 
     private void CheckForNewBox(int i, int j, bool vertical)
     {
-        switchPlayer = !CheckBox(i,j,true, vertical);
-        switchPlayer = switchPlayer || !CheckBox(i,j,false, vertical);
+        bool foundBox1 = CheckBox(i,j,true, vertical);
+        bool foundBox2 = CheckBox(i,j,false, vertical);
+        switchPlayer = !(foundBox1 || foundBox2);
     }
 
     private bool CheckBox(int i, int j, bool positveOffset, bool vertical)
@@ -168,6 +170,8 @@ public class DotsAndDashesGame : MonoBehaviour
 
     private void ClaimBox(Vector3 boxPosition)
     {
+        playerScores[turnPlayer] += 1;
+        Debug.Log(playerScores);
         GameObject newBox = Instantiate(boxPrefab);
         newBox.transform.localScale = new Vector3(spaceBetweenDots, spaceBetweenDots, 0);
         newBox.transform.position = boxPosition;
