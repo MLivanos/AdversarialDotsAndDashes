@@ -13,8 +13,6 @@ public class DotsAndDashesGame : MonoBehaviour
     [SerializeField] private float spaceBetweenDots;
     GameObject[,] gameMatrixObjectsHorizontal;
     GameObject[,] gameMatrixObjectsVertical;
-    int[,] gameMatrixHorizontal;
-    int[,] gameMatrixVertical;
     bool[,] claimedBoxes;
     Vector2Int playerScores = Vector2Int.zero;
     int turnPlayer = 1;
@@ -58,8 +56,6 @@ public class DotsAndDashesGame : MonoBehaviour
 
     public void Initialize()
     {
-        gameMatrixHorizontal = new int[shape.x - 1,shape.y];
-        gameMatrixVertical = new int[shape.x,shape.y - 1];
         gameMatrixObjectsHorizontal = new GameObject[shape.x - 1,shape.y];
         gameMatrixObjectsVertical = new GameObject[shape.x,shape.y - 1];
         //gameMatrixObjects = new GameObject[shape.x,shape.y];
@@ -113,14 +109,6 @@ public class DotsAndDashesGame : MonoBehaviour
         Vector2Int position = lineScript.GetGridPosition();
         Renderer lineRenderer = line.GetComponent<Renderer>();
         lineRenderer.material.SetColor("_BaseColor", playerColors[turnPlayer]);
-        if (lineScript.IsVertical())
-        {
-            gameMatrixVertical[position.x,position.y] = turnPlayer;
-        }
-        else
-        {
-            gameMatrixHorizontal[position.x,position.y] = turnPlayer;
-        }
         lineScript.SetClaimed(true);
         CheckForNewBox(position.x, position.y, lineScript.IsVertical());
     }
