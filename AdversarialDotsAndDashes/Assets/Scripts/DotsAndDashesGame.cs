@@ -184,7 +184,14 @@ public class DotsAndDashesGame : MonoBehaviour
         return false;
     }
 
-    private bool IndicesInBounds(Vector2Int majorIndices, Vector2Int minorIndices1, Vector2Int minorIndices2, GameObject[,] majorAxis, GameObject[,] minorAxis)
+    public bool IndicesInBounds(Vector2Int majorIndices, Vector2Int minorIndices1, Vector2Int minorIndices2, bool vertical)
+    {
+        GameObject[,] majorAxis = vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        GameObject[,] minorAxis = !vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        return IndicesInBounds(majorIndices, minorIndices1, minorIndices2, majorAxis, minorAxis);
+    }
+
+    public bool IndicesInBounds(Vector2Int majorIndices, Vector2Int minorIndices1, Vector2Int minorIndices2, GameObject[,] majorAxis, GameObject[,] minorAxis)
     {
         bool majorOutOfBounds = majorIndices.x >= 0 && majorIndices.y >= 0 && majorIndices.x < majorAxis.GetLength(0) && majorIndices.y < majorAxis.GetLength(1);
         bool minor1OutOfBounds = minorIndices1.x >= 0 && minorIndices1.y >= 0 && minorIndices1.x < minorAxis.GetLength(0) && minorIndices1.y < minorAxis.GetLength(1);

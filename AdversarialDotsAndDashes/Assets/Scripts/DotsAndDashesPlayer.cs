@@ -24,8 +24,8 @@ public abstract class DotsAndDashesPlayer : MonoBehaviour
         Random.InitState(seed);
     }
 
-    public virtual void Play()
+    public virtual DotsAndDashesMove Play()
     {
-        
+        return null;
     }
 }
