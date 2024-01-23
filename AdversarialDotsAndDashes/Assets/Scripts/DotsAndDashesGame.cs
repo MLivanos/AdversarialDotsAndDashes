@@ -16,6 +16,7 @@ public class DotsAndDashesGame : MonoBehaviour
     bool[,] claimedBoxes;
     Vector2Int playerScores = Vector2Int.zero;
     int turnPlayer = 1;
+    int nLinesClaimed;
     bool switchPlayer = false;
 
     private void Start()
@@ -56,9 +57,9 @@ public class DotsAndDashesGame : MonoBehaviour
 
     public void Initialize()
     {
+        nLinesClaimed = 0;
         gameMatrixObjectsHorizontal = new GameObject[shape.x - 1,shape.y];
         gameMatrixObjectsVertical = new GameObject[shape.x,shape.y - 1];
-        //gameMatrixObjects = new GameObject[shape.x,shape.y];
         claimedBoxes = new bool[shape.x,shape.y];
         float xOffset = (shape.x - 1) / 2.0f * spaceBetweenDots;
         float yOffset = (shape.y - 1) / 2.0f * spaceBetweenDots;
@@ -86,14 +87,9 @@ public class DotsAndDashesGame : MonoBehaviour
         int yGridPosition = j - verticalMultiplier;
         Vector3 offset = (1-verticalMultiplier)*Vector3.right + verticalMultiplier*Vector3.up;
         GameObject line = Instantiate(linePrefab, position + offset, Quaternion.Euler(0, 0, 90 * (1-verticalMultiplier)));
-        if (vertical)
-        {
-            gameMatrixObjectsVertical[i,j-1] = line;
-        }
-        else
-        {
-            gameMatrixObjectsHorizontal[i,j] = line;
-        }
+        GameObject[,] axis = vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        int axisOffset = vertical ? -1 : 0;
+        axis[i,j+axisOffset] = line;
         Line lineScript = line.GetComponent<Line>();
         lineScript.SetGridPosition(i, j - verticalMultiplier);
         lineScript.SetVetical(vertical);
@@ -110,7 +106,13 @@ public class DotsAndDashesGame : MonoBehaviour
         Renderer lineRenderer = line.GetComponent<Renderer>();
         lineRenderer.material.SetColor("_BaseColor", playerColors[turnPlayer]);
         lineScript.SetClaimed(true);
+        nLinesClaimed += 1;
         CheckForNewBox(position.x, position.y, lineScript.IsVertical());
+        if (IsGameOver())
+        {
+            Debug.Log("Game Over! Final Score: ");
+            Debug.Log(playerScores);
+        }
     }
 
     private void CheckForNewBox(int i, int j, bool vertical)
@@ -169,15 +171,8 @@ public class DotsAndDashesGame : MonoBehaviour
         boxRenderer.material.SetColor("_Color", semiTransparentColor);
     }
 
-    private void CheckForNulls(GameObject[,] matrix)
+    private bool IsGameOver()
     {
-        for(int i=0; i<matrix.GetLength(0); i++)
-        {
-            for(int j=0; j<matrix.GetLength(1); j++)
-            {
-                Line line = matrix[i,j].GetComponent<Line>();
-                Debug.Log(line.GetGridPosition());
-            }
-        }
+        return nLinesClaimed == gameMatrixObjectsHorizontal.GetLength(0) * gameMatrixObjectsHorizontal.GetLength(1) + gameMatrixObjectsVertical.GetLength(0) * gameMatrixObjectsVertical.GetLength(1);
     }
 }
