@@ -86,6 +86,7 @@ public class DotsAndDashesGame : MonoBehaviour
 
     private void Restart()
     {
+        nLinesClaimed = 0;
         playerScores = Vector2Int.zero;
         foreach(GameObject box in instantiatedBoxes)
         {
