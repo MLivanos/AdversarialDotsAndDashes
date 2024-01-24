@@ -21,7 +21,7 @@ public class CompactBoard
     public CompactBoard GetBoardCopy()
     {
         CompactBoard newBoard = new CompactBoard();
-        newBoard.InitializeRepresentation(verticalLines, horizontalLines, game, numberOfMoves);
+        newBoard.InitializeRepresentation(verticalLines.Clone() as bool[,], horizontalLines.Clone() as bool[,], game, numberOfMoves);
         return newBoard;
     }
 
