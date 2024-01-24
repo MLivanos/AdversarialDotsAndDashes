@@ -8,7 +8,7 @@ public class Node
     private DotsAndDashesMove recentMove;
     private List<Node> children;
     private Node parent;
-    private DotsAndDashesMove chosenMove;
+    private Node chosenChild;
     private int changeInScore;
     private int score;
     private int depth;
@@ -61,7 +61,7 @@ public class Node
 
     public DotsAndDashesMove GetBestMove()
     {
-        return chosenMove;
+        return chosenChild.GetMove();
     }
 
     public bool IsMax()
@@ -84,9 +84,9 @@ public class Node
         parent = parent_;
     }
 
-    public void SetChosenMove(DotsAndDashesMove move)
+    public void SetChosenChild(Node thisChildNode)
     {
-        chosenMove = move;
+        chosenChild = thisChildNode;
     }
 
     public void SetDepth(int depth_)

@@ -38,9 +38,10 @@ public class CompactBoard
 
     public void SimulateMove(DotsAndDashesMove move)
     {
-        while(!move.IsEmpty())
+        List<(int, int, bool)> moveList = move.GetMove();
+        for (int i=0; i<moveList.Count; i++)
         {
-            (int, int, bool) nextMove = move.PopMove();
+            (int, int, bool) nextMove = moveList[i];
             SimulateMove(nextMove.Item1, nextMove.Item2, nextMove.Item3);
         }
     }
@@ -49,7 +50,7 @@ public class CompactBoard
     {
         bool foundBox1 = CheckBox(i,j,true, vertical);
         bool foundBox2 = CheckBox(i,j,false, vertical);
-        return !(foundBox1 || foundBox2);
+        return foundBox1 || foundBox2;
     }
 
     private bool CheckBox(int i, int j, bool positveOffset, bool vertical)
@@ -163,10 +164,10 @@ public class CompactBoard
             return true;
         }
         Vector2Int coordinates = new Vector2Int(i,j);
-        Vector2Int majorOffset = vertical ? Vector2Int.right : Vector2Int.up;
-        Vector2Int minorOffset = !vertical ? Vector2Int.right : Vector2Int.up;
+        Vector2Int majorOffset = vertical ? Vector2Int.up : Vector2Int.right;
+        Vector2Int minorOffset = !vertical ? Vector2Int.up : Vector2Int.right;
         bool lineParallelTo = NextToClaimed(coordinates+majorOffset, majorAxis) || NextToClaimed(coordinates-majorOffset, majorAxis);
-        bool lineOrthogonalTo = NextToClaimed(coordinates+minorOffset, minorAxis) || NextToClaimed(coordinates-minorOffset, minorAxis) || NextToClaimed(coordinates+minorOffset+majorOffset, minorAxis) || NextToClaimed(coordinates-minorOffset-majorOffset, minorAxis);
+        bool lineOrthogonalTo = NextToClaimed(coordinates, minorAxis) || NextToClaimed(coordinates-minorOffset, minorAxis) || NextToClaimed(coordinates+majorOffset, minorAxis) || NextToClaimed(coordinates-minorOffset+majorOffset, minorAxis);
         return lineParallelTo || lineOrthogonalTo; 
     }
 

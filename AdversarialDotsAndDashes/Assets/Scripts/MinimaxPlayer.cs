@@ -17,7 +17,7 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         initialNode.SetDepth(maxDepth);
         initialNode.SetMax(true);
         Debug.Log(Max(initialNode, maxDepth));
-        //game.RecieveMove(bestMove);
+        game.RecieveMove(initialNode.GetBestMove());
     }
 
     private int Max(Node node, int depth)
@@ -28,12 +28,14 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         }
         int bestValueFound = Int32.MinValue;
         List<DotsAndDashesMove> moves = GetMoves(node);
+        Debug.Log(moves.Count);
         foreach (DotsAndDashesMove move in moves)
         {
             Node childNode = CreateChild(node, move);
             int newValue = Min(childNode, depth-1);
             if (newValue > bestValueFound)
             {
+                node.SetChosenChild(childNode);
                 bestValueFound = newValue;
             }
         }
@@ -55,6 +57,7 @@ public class MinimaxPlayer : DotsAndDashesPlayer
             int newValue = Max(childNode, depth-1);
             if (newValue < bestValueFound)
             {
+                node.SetChosenChild(childNode);
                 bestValueFound = newValue;
             }
         }
@@ -63,8 +66,8 @@ public class MinimaxPlayer : DotsAndDashesPlayer
 
     private List<DotsAndDashesMove> GetMoves(Node node)
     {
-        List<DotsAndDashesMove> verticalMoves = node.GetBoard().GetNeighborsByMatrix(true, true);
-        List<DotsAndDashesMove> horizontalMoves = node.GetBoard().GetNeighborsByMatrix(false, true);
+        List<DotsAndDashesMove> verticalMoves = node.GetBoard().GetNeighborsByMatrix(true, true, false);
+        List<DotsAndDashesMove> horizontalMoves = node.GetBoard().GetNeighborsByMatrix(false, true, false);
         return verticalMoves.Concat(horizontalMoves).ToList();
     }
 
