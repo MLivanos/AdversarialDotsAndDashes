@@ -8,21 +8,40 @@ public class CompactBoard
     bool[,] horizontalLines;
     bool[,] verticalLines;
     bool finished = false;
+    int numberOfMoves;
 
-    public void InitializeRepresentation(bool[,] vertical, bool[,] horizontal, DotsAndDashesGame gameReference)
+    public void InitializeRepresentation(bool[,] vertical, bool[,] horizontal, DotsAndDashesGame gameReference, int linesClaimed)
     {
         horizontalLines = horizontal;
         verticalLines = vertical;
         game = gameReference;
+        numberOfMoves = linesClaimed;
+    }
+
+    public CompactBoard GetBoardCopy()
+    {
+        CompactBoard newBoard = new CompactBoard();
+        newBoard.InitializeRepresentation(verticalLines, horizontalLines, game, numberOfMoves);
+        return newBoard;
     }
 
     public void SimulateMove(int i, int j, bool vertical)
     {
-        bool[,] matrix = vertical ? horizontalLines : verticalLines;
+        bool[,] matrix = vertical ? verticalLines : horizontalLines;
         matrix[i,j] = true;
         if (!CheckForNewBox(i,j,vertical))
         {
             finished = true;
+        }
+        numberOfMoves++;
+    }
+
+    public void SimulateMove(DotsAndDashesMove move)
+    {
+        while(!move.IsEmpty())
+        {
+            (int, int, bool) nextMove = move.PopMove();
+            SimulateMove(nextMove.Item1, nextMove.Item2, nextMove.Item3);
         }
     }
 
@@ -101,19 +120,19 @@ public class CompactBoard
         if(recursive && CheckForNewBox(i,j,vertical))
         {
             CompactBoard newBoard = new CompactBoard();
-            newBoard.InitializeRepresentation(verticalLines, horizontalLines, game);
+            newBoard.InitializeRepresentation(verticalLines, horizontalLines, game, numberOfMoves);
             newBoard.SimulateMove(i,j,vertical);
             List<DotsAndDashesMove> additionalRoutesVertical = newBoard.GetNeighborsByMatrix(true, restricted, recursive);
             List<DotsAndDashesMove> additionalRoutesHorizontal = newBoard.GetNeighborsByMatrix(false, restricted, recursive);
             foreach(DotsAndDashesMove route in additionalRoutesVertical)
             {
-                newMove = CreateNewMove(i,j,vertical);
+                newMove = CreateNewMove(i,j,true);
                 newMove.Concatenate(route);
                 availableSpaces.Add(newMove);
             }
             foreach(DotsAndDashesMove route in additionalRoutesHorizontal)
             {
-                newMove = CreateNewMove(i,j,vertical);
+                newMove = CreateNewMove(i,j,false);
                 newMove.Concatenate(route);
                 availableSpaces.Add(newMove);
             }
@@ -155,7 +174,7 @@ public class CompactBoard
     {
         int i = coordinates.x;
         int j = coordinates.y;
-        if (i < 0 || j < 0 || i < matrix.GetLength(0) || j < matrix.GetLength(1))
+        if (i < 0 || j < 0 || i >= matrix.GetLength(0) || j >= matrix.GetLength(1))
         {
             return false;
         }
@@ -165,5 +184,10 @@ public class CompactBoard
     public bool IsFinished()
     {
         return finished;
+    }
+
+    public bool IsGameOver()
+    {
+        return numberOfMoves == horizontalLines.GetLength(0) * horizontalLines.GetLength(1) + verticalLines.GetLength(0) * verticalLines.GetLength(1);
     }
 }

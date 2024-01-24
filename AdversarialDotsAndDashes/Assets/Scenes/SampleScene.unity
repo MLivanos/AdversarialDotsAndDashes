@@ -391,8 +391,8 @@ MonoBehaviour:
   boxPrefab: {fileID: 6029801645283580034, guid: 98b2304885953481a880e37a75878af3, type: 3}
   spaceBetweenDots: 2
   playersPrefab:
-  - {fileID: 1159423144932228947, guid: dd82a9bf5c2824e26894e1169ead7c6d, type: 3}
   - {fileID: 2038653818080163169, guid: 2eb07781f0cca42c5bd2198dc3e05d43, type: 3}
+  - {fileID: 720120360710085577, guid: d10163b3ad7a348af82851389f0bce35, type: 3}
 --- !u!4 &2099022791
 Transform:
   m_ObjectHideFlags: 0

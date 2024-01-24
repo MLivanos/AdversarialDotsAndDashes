@@ -231,7 +231,7 @@ public class DotsAndDashesGame : MonoBehaviour
         CompactBoard representation = new CompactBoard();
         bool[,] claimedVertical = GetClaimedMatrix(true);
         bool[,] claimedHorizontal = GetClaimedMatrix(false);
-        representation.InitializeRepresentation(claimedVertical, claimedHorizontal, this);
+        representation.InitializeRepresentation(claimedVertical, claimedHorizontal, this, nLinesClaimed);
         return representation;
     }
 
