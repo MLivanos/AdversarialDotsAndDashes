@@ -9,6 +9,7 @@ public class CompactBoard
     bool[,] verticalLines;
     bool finished = false;
     int numberOfMoves;
+    int deltaScore = 0;
 
     public void InitializeRepresentation(bool[,] vertical, bool[,] horizontal, DotsAndDashesGame gameReference, int linesClaimed)
     {
@@ -50,6 +51,7 @@ public class CompactBoard
     {
         bool foundBox1 = CheckBox(i,j,true, vertical);
         bool foundBox2 = CheckBox(i,j,false, vertical);
+        deltaScore += foundBox1 && foundBox2 ? 2 : foundBox1 || foundBox2 ? 1 : 0;
         return foundBox1 || foundBox2;
     }
 
@@ -190,5 +192,10 @@ public class CompactBoard
     public bool IsGameOver()
     {
         return numberOfMoves == horizontalLines.GetLength(0) * horizontalLines.GetLength(1) + verticalLines.GetLength(0) * verticalLines.GetLength(1);
+    }
+
+    public int GetDeltaScore()
+    {
+        return deltaScore;
     }
 }

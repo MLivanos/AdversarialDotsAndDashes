@@ -21,12 +21,7 @@ public class Node
     
     public int Evaluate()
     {
-        if (recentMove == null)
-        {
-            return 0;
-        }
-        int sign = isMax ? 1 : -1;
-        return changeInScore + sign * (recentMove.GetMove().Count - 1);
+        return changeInScore + (isMax ? 1 : -1) * board.GetDeltaScore();
     }
 
     public void SimulateMove(DotsAndDashesMove move)
