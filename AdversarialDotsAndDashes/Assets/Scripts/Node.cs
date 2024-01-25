@@ -21,7 +21,7 @@ public class Node
     
     public int Evaluate()
     {
-        return changeInScore + (isMax ? 1 : -1) * board.GetDeltaScore();
+        return changeInScore + (isMax ? -1 : 1) * board.GetDeltaScore();
     }
 
     public void SimulateMove(DotsAndDashesMove move)
