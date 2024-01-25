@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class MinimaxPlayer : DotsAndDashesPlayer
 {
+    [SerializeField] bool alphaBeta;
     DotsAndDashesMove bestMove = new DotsAndDashesMove();
     int maxDepth = 2;
     Node initialNode;
@@ -16,11 +17,11 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         initialNode.SetBoard(representation);
         initialNode.SetDepth(maxDepth);
         initialNode.SetMax(true);
-        Debug.Log(Max(initialNode, maxDepth));
+        Debug.Log(Max(initialNode, maxDepth, Int32.MinValue, Int32.MaxValue));
         game.RecieveMove(initialNode.GetBestMove());
     }
 
-    private int Max(Node node, int depth)
+    private int Max(Node node, int depth, int alpha, int beta)
     {
         if (depth == 0 || board.IsGameOver())
         {
@@ -31,17 +32,22 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         foreach (DotsAndDashesMove move in moves)
         {
             Node childNode = CreateChild(node, move);
-            int newValue = Min(childNode, depth-1);
+            int newValue = Min(childNode, depth-1, alpha, beta);
             if (newValue > bestValueFound)
             {
                 node.SetChosenChild(childNode);
                 bestValueFound = newValue;
             }
+            alpha = (int)Mathf.Max(alpha, newValue);
+            if (alphaBeta && bestValueFound >= beta)
+            {
+                break;
+            }
         }
         return bestValueFound;
     }
 
-    private int Min(Node node, int depth)
+    private int Min(Node node, int depth, int alpha, int beta)
     {
         if (depth == 0 || board.IsGameOver())
         {
@@ -52,11 +58,16 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         foreach (DotsAndDashesMove move in moves)
         {
             Node childNode = CreateChild(node, move);
-            int newValue = Max(childNode, depth-1);
+            int newValue = Max(childNode, depth-1, alpha, beta);
             if (newValue < bestValueFound)
             {
                 node.SetChosenChild(childNode);
                 bestValueFound = newValue;
+            }
+            beta = (int)Mathf.Min(beta, newValue);
+            if (alphaBeta && bestValueFound <= alpha)
+            {
+                break;
             }
         }
         return bestValueFound;
