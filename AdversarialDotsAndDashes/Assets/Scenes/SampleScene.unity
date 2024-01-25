@@ -385,11 +385,14 @@ MonoBehaviour:
   - {r: 0.09743297, g: 1, b: 0, a: 1}
   - {r: 1, g: 0, b: 0.890615, a: 1}
   unclaimedColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
-  shape: {x: 4, y: 5}
+  shape: {x: 5, y: 6}
   dotPrefab: {fileID: 2257187544762420308, guid: 04fa11f94db304351a5324eb36e9b04f, type: 3}
   linePrefab: {fileID: 8017340929187280312, guid: fc001a011a6a94988be8040252641602, type: 3}
   boxPrefab: {fileID: 6029801645283580034, guid: 98b2304885953481a880e37a75878af3, type: 3}
   spaceBetweenDots: 2
+  playersPrefab:
+  - {fileID: 2038653818080163169, guid: 2eb07781f0cca42c5bd2198dc3e05d43, type: 3}
+  - {fileID: 8256547207277319934, guid: d57b2ae932e3d4234ba75f3510643401, type: 3}
 --- !u!4 &2099022791
 Transform:
   m_ObjectHideFlags: 0

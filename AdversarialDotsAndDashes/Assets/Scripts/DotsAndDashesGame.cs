@@ -12,6 +12,8 @@ public class DotsAndDashesGame : MonoBehaviour
     [SerializeField] private GameObject linePrefab;
     [SerializeField] private GameObject boxPrefab;
     [SerializeField] private float spaceBetweenDots;
+    [SerializeField] private GameObject[] playersPrefab;
+    private DotsAndDashesPlayer[] players;
     private GameObject[,] gameMatrixObjectsHorizontal;
     private GameObject[,] gameMatrixObjectsVertical;
     private List<GameObject> instantiatedBoxes = new List<GameObject>();
@@ -19,19 +21,22 @@ public class DotsAndDashesGame : MonoBehaviour
     private Vector2Int playerScores = Vector2Int.zero;
     int turnPlayer = 1;
     int nLinesClaimed;
-    bool switchPlayer = false;
+    bool switchPlayer = true;
 
     private void Start()
     {
+        players = new DotsAndDashesPlayer[2];
+        GameObject player1Object = Instantiate(playersPrefab[0]);
+        GameObject player2Object = Instantiate(playersPrefab[1]);
+        players[0] = player1Object.GetComponent<DotsAndDashesPlayer>();
+        players[1] = player2Object.GetComponent<DotsAndDashesPlayer>();
+        players[0].Initialize(0,this);
+        players[1].Initialize(1,this);
         Initialize();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            CheckForLine();
-        }
         if (switchPlayer)
         {
             ChangeTurnPlayer();
@@ -42,23 +47,29 @@ public class DotsAndDashesGame : MonoBehaviour
         }
     }
 
-    private void CheckForLine()
+    public void RecieveMove(DotsAndDashesMove move)
     {
-        RaycastHit raycastHit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out raycastHit, 10f))
+        while (!switchPlayer && !move.IsEmpty())
         {
-            if (raycastHit.transform.tag == "line")
-            {
-                ChangeLineOwnership(raycastHit.transform.gameObject);
-            }
+            (int, int, bool) lineClaimed = move.PopMove();
+            GameObject[,] matrix = lineClaimed.Item3 ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+            GameObject line = matrix[lineClaimed.Item1,lineClaimed.Item2];
+            ChangeLineOwnership(line);
+        }
+        if (!switchPlayer)
+        {
+            players[turnPlayer].Play(GetCompactRepresentation());
         }
     }
 
     private void ChangeTurnPlayer()
     {
-        turnPlayer = 1 - turnPlayer;
-        switchPlayer = false;
+        if (!IsGameOver())
+        {
+            turnPlayer = 1 - turnPlayer;
+            switchPlayer = false;
+            players[turnPlayer].Play(GetCompactRepresentation());
+        }
     }
 
     public void Initialize()
@@ -86,6 +97,9 @@ public class DotsAndDashesGame : MonoBehaviour
 
     private void Restart()
     {
+        nLinesClaimed = 0;
+        turnPlayer = 1;
+        switchPlayer = true;
         playerScores = Vector2Int.zero;
         foreach(GameObject box in instantiatedBoxes)
         {
@@ -183,7 +197,14 @@ public class DotsAndDashesGame : MonoBehaviour
         return false;
     }
 
-    private bool IndicesInBounds(Vector2Int majorIndices, Vector2Int minorIndices1, Vector2Int minorIndices2, GameObject[,] majorAxis, GameObject[,] minorAxis)
+    public bool IndicesInBounds(Vector2Int majorIndices, Vector2Int minorIndices1, Vector2Int minorIndices2, bool vertical)
+    {
+        GameObject[,] majorAxis = vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        GameObject[,] minorAxis = !vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        return IndicesInBounds(majorIndices, minorIndices1, minorIndices2, majorAxis, minorAxis);
+    }
+
+    public bool IndicesInBounds(Vector2Int majorIndices, Vector2Int minorIndices1, Vector2Int minorIndices2, GameObject[,] majorAxis, GameObject[,] minorAxis)
     {
         bool majorOutOfBounds = majorIndices.x >= 0 && majorIndices.y >= 0 && majorIndices.x < majorAxis.GetLength(0) && majorIndices.y < majorAxis.GetLength(1);
         bool minor1OutOfBounds = minorIndices1.x >= 0 && minorIndices1.y >= 0 && minorIndices1.x < minorAxis.GetLength(0) && minorIndices1.y < minorAxis.GetLength(1);
@@ -208,5 +229,32 @@ public class DotsAndDashesGame : MonoBehaviour
     private bool IsGameOver()
     {
         return nLinesClaimed == gameMatrixObjectsHorizontal.GetLength(0) * gameMatrixObjectsHorizontal.GetLength(1) + gameMatrixObjectsVertical.GetLength(0) * gameMatrixObjectsVertical.GetLength(1);
+    }
+
+    public CompactBoard GetCompactRepresentation()
+    {
+        CompactBoard representation = new CompactBoard();
+        bool[,] claimedVertical = GetClaimedMatrix(true);
+        bool[,] claimedHorizontal = GetClaimedMatrix(false);
+        representation.InitializeRepresentation(claimedVertical, claimedHorizontal, this, nLinesClaimed);
+        return representation;
+    }
+
+    private bool[,] GetClaimedMatrix(bool vertical)
+    {
+        GameObject[,] gameObjectMatrix = vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        bool[,] matrix = new bool[gameObjectMatrix.GetLength(0),gameObjectMatrix.GetLength(1)];
+        for (int i=0; i<matrix.GetLength(0); i++)
+        {
+            for(int j=0; j<matrix.GetLength(1); j++)
+            {
+                Line lineScript = gameObjectMatrix[i,j].GetComponent<Line>();
+                if (lineScript.IsClaimed())
+                {
+                    matrix[i,j] = true;
+                }
+            }
+        }
+        return matrix;
     }
 }
