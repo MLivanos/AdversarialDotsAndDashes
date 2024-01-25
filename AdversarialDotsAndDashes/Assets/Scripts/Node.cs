@@ -21,21 +21,17 @@ public class Node
     
     public int Evaluate()
     {
-        return changeInScore + (isMax ? -1 : 1) * board.GetDeltaScore();
+        return changeInScore + (isMax ? 1 : -1) * board.GetDeltaScore();
     }
 
     public void SimulateMove(DotsAndDashesMove move)
     {
-        if (move.GetMove().Count > 1)
-        {
-            Debug.Log(move.GetMove().Count);
-        }
         board.SimulateMove(move);
     }
 
     public int GetScore()
     {
-        return score;
+        return changeInScore;
     }
 
     public int GetDepth()
