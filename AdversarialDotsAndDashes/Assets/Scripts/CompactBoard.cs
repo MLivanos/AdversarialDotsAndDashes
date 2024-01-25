@@ -122,20 +122,19 @@ public class CompactBoard
         DotsAndDashesMove newMove = CreateNewMove(i,j,vertical);
         if(recursive && CheckForNewBox(i,j,vertical))
         {
-            CompactBoard newBoard = new CompactBoard();
-            newBoard.InitializeRepresentation(verticalLines, horizontalLines, game, numberOfMoves);
+            CompactBoard newBoard = GetBoardCopy();
             newBoard.SimulateMove(i,j,vertical);
             List<DotsAndDashesMove> additionalRoutesVertical = newBoard.GetNeighborsByMatrix(true, restricted, recursive);
             List<DotsAndDashesMove> additionalRoutesHorizontal = newBoard.GetNeighborsByMatrix(false, restricted, recursive);
             foreach(DotsAndDashesMove route in additionalRoutesVertical)
             {
-                newMove = CreateNewMove(i,j,true);
+                newMove = CreateNewMove(i,j,vertical);
                 newMove.Concatenate(route);
                 availableSpaces.Add(newMove);
             }
             foreach(DotsAndDashesMove route in additionalRoutesHorizontal)
             {
-                newMove = CreateNewMove(i,j,false);
+                newMove = CreateNewMove(i,j,vertical);
                 newMove.Concatenate(route);
                 availableSpaces.Add(newMove);
             }

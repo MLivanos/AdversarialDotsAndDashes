@@ -8,7 +8,7 @@ public class MinimaxPlayer : DotsAndDashesPlayer
 {
     [SerializeField] bool alphaBeta;
     DotsAndDashesMove bestMove = new DotsAndDashesMove();
-    int maxDepth = 2;
+    int maxDepth = 3;
     Node initialNode;
     public override void Play(CompactBoard representation)
     {
@@ -17,7 +17,7 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         initialNode.SetBoard(representation);
         initialNode.SetDepth(maxDepth);
         initialNode.SetMax(true);
-        Debug.Log(Max(initialNode, maxDepth, Int32.MinValue, Int32.MaxValue));
+        Max(initialNode, maxDepth, Int32.MinValue, Int32.MaxValue);
         game.RecieveMove(initialNode.GetBestMove());
     }
 
@@ -75,8 +75,8 @@ public class MinimaxPlayer : DotsAndDashesPlayer
 
     private List<DotsAndDashesMove> GetMoves(Node node)
     {
-        List<DotsAndDashesMove> verticalMoves = node.GetBoard().GetNeighborsByMatrix(true, true, false);
-        List<DotsAndDashesMove> horizontalMoves = node.GetBoard().GetNeighborsByMatrix(false, true, false);
+        List<DotsAndDashesMove> verticalMoves = node.GetBoard().GetNeighborsByMatrix(true, true, true);
+        List<DotsAndDashesMove> horizontalMoves = node.GetBoard().GetNeighborsByMatrix(false, true, true);
         return verticalMoves.Concat(horizontalMoves).ToList();
     }
 

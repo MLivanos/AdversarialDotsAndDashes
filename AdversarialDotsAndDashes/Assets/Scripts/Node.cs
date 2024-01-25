@@ -26,6 +26,10 @@ public class Node
 
     public void SimulateMove(DotsAndDashesMove move)
     {
+        if (move.GetMove().Count > 1)
+        {
+            Debug.Log(move.GetMove().Count);
+        }
         board.SimulateMove(move);
     }
 

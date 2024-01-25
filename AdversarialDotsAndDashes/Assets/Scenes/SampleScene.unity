@@ -392,7 +392,7 @@ MonoBehaviour:
   spaceBetweenDots: 2
   playersPrefab:
   - {fileID: 2038653818080163169, guid: 2eb07781f0cca42c5bd2198dc3e05d43, type: 3}
-  - {fileID: 720120360710085577, guid: d10163b3ad7a348af82851389f0bce35, type: 3}
+  - {fileID: 8256547207277319934, guid: d57b2ae932e3d4234ba75f3510643401, type: 3}
 --- !u!4 &2099022791
 Transform:
   m_ObjectHideFlags: 0

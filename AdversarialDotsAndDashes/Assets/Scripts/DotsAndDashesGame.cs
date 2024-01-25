@@ -64,9 +64,12 @@ public class DotsAndDashesGame : MonoBehaviour
 
     private void ChangeTurnPlayer()
     {
-        turnPlayer = 1 - turnPlayer;
-        switchPlayer = false;
-        players[turnPlayer].Play(GetCompactRepresentation());
+        if (!IsGameOver())
+        {
+            turnPlayer = 1 - turnPlayer;
+            switchPlayer = false;
+            players[turnPlayer].Play(GetCompactRepresentation());
+        }
     }
 
     public void Initialize()
@@ -95,6 +98,8 @@ public class DotsAndDashesGame : MonoBehaviour
     private void Restart()
     {
         nLinesClaimed = 0;
+        turnPlayer = 1;
+        switchPlayer = true;
         playerScores = Vector2Int.zero;
         foreach(GameObject box in instantiatedBoxes)
         {
