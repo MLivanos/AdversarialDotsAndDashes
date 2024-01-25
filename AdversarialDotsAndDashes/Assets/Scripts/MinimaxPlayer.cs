@@ -8,7 +8,7 @@ public class MinimaxPlayer : DotsAndDashesPlayer
 {
     [SerializeField] bool alphaBeta;
     DotsAndDashesMove bestMove = new DotsAndDashesMove();
-    int maxDepth = 2;
+    int maxDepth = 4;
     Node initialNode;
     public override void Play(CompactBoard representation)
     {

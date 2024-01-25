@@ -71,10 +71,6 @@ public class Node
 
     public void SetChangeInScore(int parentScore)
     {
-        if (parentScore > 0)
-        {
-            Debug.Log(depth += 1);
-        }
         changeInScore = parentScore;
     }
 
