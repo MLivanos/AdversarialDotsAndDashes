@@ -105,10 +105,6 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         childNode.SetParent(parent);
         childNode.SetDepth(parent.GetDepth() - 1);
         childNode.SetMax(!parent.IsMax());
-        if (parent.GetDepth() == maxDepth && parent.Evaluate() != 0)
-        {
-            Debug.Log(parent.Evaluate());
-        }
         childNode.SetChangeInScore(parent.Evaluate());
         return childNode;
     }
