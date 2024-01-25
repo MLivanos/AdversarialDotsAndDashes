@@ -19,17 +19,9 @@ public class Node
         children.Add(child);
     }
     
-    // ISSUE: changeInScore is wrong
     public int Evaluate()
     {
-        /*if (depth == 0 && (isMax ? -1 : 1) * board.GetDeltaScore() != 0)
-        {
-            Debug.Log("======");
-            Debug.Log(changeInScore);
-            Debug.Log((isMax ? -1 : 1) * board.GetDeltaScore());
-        }*/
         return changeInScore + (isMax ? -1 : 1) * board.GetDeltaScore();
-        //return (isMax ? -1 : 1) * board.GetDeltaScore();
     }
 
     public void SimulateMove(DotsAndDashesMove move)
