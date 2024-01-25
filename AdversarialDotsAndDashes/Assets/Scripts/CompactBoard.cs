@@ -30,7 +30,7 @@ public class CompactBoard
     {
         bool[,] matrix = vertical ? verticalLines : horizontalLines;
         matrix[i,j] = true;
-        if (!CheckForNewBox(i,j,vertical))
+        if (!CheckForNewBox(i,j,vertical,true))
         {
             finished = true;
         }
@@ -47,11 +47,14 @@ public class CompactBoard
         }
     }
 
-    public bool CheckForNewBox(int i, int j, bool vertical)
+    public bool CheckForNewBox(int i, int j, bool vertical, bool countScore=false)
     {
         bool foundBox1 = CheckBox(i,j,true, vertical);
         bool foundBox2 = CheckBox(i,j,false, vertical);
-        deltaScore += foundBox1 && foundBox2 ? 2 : foundBox1 || foundBox2 ? 1 : 0;
+        if (countScore)
+        {
+            deltaScore += foundBox1 && foundBox2 ? 2 : foundBox1 || foundBox2 ? 1 : 0;
+        }
         return foundBox1 || foundBox2;
     }
 
@@ -196,5 +199,10 @@ public class CompactBoard
     public int GetDeltaScore()
     {
         return deltaScore;
+    }
+
+    public void ResetDeltaScore()
+    {
+        deltaScore = 0;
     }
 }

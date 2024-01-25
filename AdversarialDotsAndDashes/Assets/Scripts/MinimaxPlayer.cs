@@ -10,17 +10,16 @@ public class MinimaxPlayer : DotsAndDashesPlayer
     DotsAndDashesMove bestMove = new DotsAndDashesMove();
     int maxDepth = 2;
     Node initialNode;
-    int nfirsts = 0;
-    int nTotal = 0;
     public override void Play(CompactBoard representation)
     {
         board = representation;
+        board.ResetDeltaScore();
         initialNode = new Node();
         initialNode.SetBoard(representation);
         initialNode.SetDepth(maxDepth);
         initialNode.SetMax(true);
+        initialNode.SetChangeInScore(0);
         Max(initialNode, maxDepth, Int32.MinValue, Int32.MaxValue);
-        Debug.Log(nfirsts/nTotal);
         game.RecieveMove(initialNode.GetBestMove());
     }
 
@@ -32,19 +31,12 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         }
         int bestValueFound = Int32.MinValue;
         List<DotsAndDashesMove> moves = GetMoves(node);
-        bool first = true;
         foreach (DotsAndDashesMove move_ in moves)
         {
             Node childNode = CreateChild(node, move_);
             int newValue = Min(childNode, depth-1, alpha, beta);
             if (newValue > bestValueFound)
             {
-                if (first)
-                {
-                    nfirsts += 1;
-                }
-                nTotal += 1;
-                first = false;
                 node.SetChosenChild(childNode);
                 bestValueFound = newValue;
             }
@@ -65,19 +57,12 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         }
         int bestValueFound = Int32.MaxValue;
         List<DotsAndDashesMove> moves = GetMoves(node);
-        bool first = true;
         foreach (DotsAndDashesMove move_ in moves)
         {
             Node childNode = CreateChild(node, move_);
             int newValue = Max(childNode, depth-1, alpha, beta);
             if (newValue < bestValueFound)
             {
-                if (first)
-                {
-                    nfirsts += 1;
-                }
-                nTotal += 1;
-                first = false;
                 node.SetChosenChild(childNode);
                 bestValueFound = newValue;
             }
@@ -106,6 +91,10 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         childNode.SetParent(parent);
         childNode.SetDepth(parent.GetDepth() - 1);
         childNode.SetMax(!parent.IsMax());
+        if (parent.GetDepth() == maxDepth && parent.Evaluate() != 0)
+        {
+            Debug.Log(parent.Evaluate());
+        }
         childNode.SetChangeInScore(parent.Evaluate());
         return childNode;
     }
