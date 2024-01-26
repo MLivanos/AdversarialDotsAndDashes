@@ -7,12 +7,13 @@ public class DotsAndDashesGame : MonoBehaviour
 {
     [SerializeField] private Color[] playerColors = new Color[2];
     [SerializeField] private Color unclaimedColor;
-    [SerializeField] private Vector2Int shape;
     [SerializeField] private GameObject dotPrefab;
     [SerializeField] private GameObject linePrefab;
     [SerializeField] private GameObject boxPrefab;
-    [SerializeField] private float spaceBetweenDots;
-    [SerializeField] private GameObject[] playersPrefab;
+    private float spaceBetweenDots=2.0f;
+    private GameObject[] playersPrefab;
+    private Vector2Int shape;
+    //
     private DotsAndDashesPlayer[] players;
     private GameObject[,] gameMatrixObjectsHorizontal;
     private GameObject[,] gameMatrixObjectsVertical;
@@ -22,18 +23,6 @@ public class DotsAndDashesGame : MonoBehaviour
     int turnPlayer = 1;
     int nLinesClaimed;
     bool switchPlayer = true;
-
-    private void Start()
-    {
-        players = new DotsAndDashesPlayer[2];
-        GameObject player1Object = Instantiate(playersPrefab[0]);
-        GameObject player2Object = Instantiate(playersPrefab[1]);
-        players[0] = player1Object.GetComponent<DotsAndDashesPlayer>();
-        players[1] = player2Object.GetComponent<DotsAndDashesPlayer>();
-        players[0].Initialize(0,this);
-        players[1].Initialize(1,this);
-        Initialize();
-    }
 
     private void Update()
     {
@@ -74,6 +63,7 @@ public class DotsAndDashesGame : MonoBehaviour
 
     public void Initialize()
     {
+        CreatePlayers();
         nLinesClaimed = 0;
         gameMatrixObjectsHorizontal = new GameObject[shape.x - 1,shape.y];
         gameMatrixObjectsVertical = new GameObject[shape.x,shape.y - 1];
@@ -93,6 +83,17 @@ public class DotsAndDashesGame : MonoBehaviour
         ClearLines(gameMatrixObjectsHorizontal);
         ClearLines(gameMatrixObjectsVertical);
         Camera.main.orthographicSize = Mathf.Max(shape.x, shape.y);
+    }
+
+    public void CreatePlayers()
+    {
+        players = new DotsAndDashesPlayer[2];
+        GameObject player1Object = Instantiate(playersPrefab[0]);
+        GameObject player2Object = Instantiate(playersPrefab[1]);
+        players[0] = player1Object.GetComponent<DotsAndDashesPlayer>();
+        players[1] = player2Object.GetComponent<DotsAndDashesPlayer>();
+        players[0].Initialize(0,this);
+        players[1].Initialize(1,this);
     }
 
     private void Restart()
