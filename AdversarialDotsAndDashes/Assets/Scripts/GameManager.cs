@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        shape[0] = 5;
+        shape[1] = 6;
+        depth = 3;
         opponent = agents[0];
         SwitchScreens(true);
     }
@@ -28,7 +31,7 @@ public class GameManager : MonoBehaviour
         dotsAndDashesGame = dotsAndDashesGameObject.GetComponent<DotsAndDashesGame>();
         GameObject player1Object = first ? agents[agents.GetLength(0)-1] : opponent;
         GameObject player2Object = !first ? agents[agents.GetLength(0)-1] : opponent;
-        dotsAndDashesGame.Configure(new Vector2Int(shape[0], shape[1]), player1Object, player2Object);
+        dotsAndDashesGame.Configure(new Vector2Int(shape[0], shape[1]), player1Object, player2Object, depth);
         dotsAndDashesGame.Initialize();
     }
 

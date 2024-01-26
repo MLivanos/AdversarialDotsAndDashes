@@ -22,6 +22,7 @@ public class DotsAndDashesGame : MonoBehaviour
     bool[,] claimedBoxes;
     private Vector2Int playerScores = Vector2Int.zero;
     int turnPlayer = 1;
+    int maxDepth;
     int nLinesClaimed;
     bool switchPlayer = true;
 
@@ -37,11 +38,12 @@ public class DotsAndDashesGame : MonoBehaviour
         }
     }
 
-    public void Configure(Vector2Int gameShape, GameObject player1, GameObject player2)
+    public void Configure(Vector2Int gameShape, GameObject player1, GameObject player2, int depth)
     {
         shape = gameShape;
         playersPrefab[0] = player1;
         playersPrefab[1] = player2;
+        maxDepth = depth;
     }
 
     public void HighLightPath()
@@ -56,7 +58,6 @@ public class DotsAndDashesGame : MonoBehaviour
         foreach(DotsAndDashesMove moveSet in linesOnThePath.GetRange(1, linesOnThePath.Count-1))
         {
             currentOpacity *= (decrement*decrement);
-            Debug.Log((byte)(255*currentOpacity));
             currentPlayer = 1 - currentPlayer;
             foreach((int, int, bool) individualMove in moveSet.GetMove())
             {
@@ -145,6 +146,16 @@ public class DotsAndDashesGame : MonoBehaviour
         GameObject player2Object = Instantiate(playersPrefab[1]);
         players[0] = player1Object.GetComponent<DotsAndDashesPlayer>();
         players[1] = player2Object.GetComponent<DotsAndDashesPlayer>();
+        MinimaxPlayer player1MinimaxScript = player1Object.GetComponent<MinimaxPlayer>();
+        MinimaxPlayer player2MinimaxScript = player2Object.GetComponent<MinimaxPlayer>();
+        if (player1MinimaxScript)
+        {
+            player1MinimaxScript.SetDepth(maxDepth);
+        }
+        if (player2MinimaxScript)
+        {
+            player2MinimaxScript.SetDepth(maxDepth);
+        }
         players[0].Initialize(0,this);
         players[1].Initialize(1,this);
     }
