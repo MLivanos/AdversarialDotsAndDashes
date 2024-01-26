@@ -23,9 +23,19 @@ public abstract class DotsAndDashesPlayer : MonoBehaviour
         Random.InitState(seed);
     }
 
+    public int GetPosition()
+    {
+        return position;
+    }
+
     public virtual void Play(CompactBoard representation)
     {
         return;
+    }
+
+    public virtual List<DotsAndDashesMove> GetHighlightedPath()
+    {
+        return new List<DotsAndDashesMove>();
     }
 
     public void Destruct()

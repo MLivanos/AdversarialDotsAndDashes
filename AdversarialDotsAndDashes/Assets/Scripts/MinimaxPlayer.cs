@@ -8,7 +8,7 @@ public class MinimaxPlayer : DotsAndDashesPlayer
 {
     [SerializeField] bool alphaBeta;
     DotsAndDashesMove bestMove = new DotsAndDashesMove();
-    int maxDepth = 3;
+    int maxDepth;
     Node initialNode;
     public override void Play(CompactBoard representation)
     {
@@ -107,5 +107,22 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         childNode.SetMax(!parent.IsMax());
         childNode.SetChangeInScore(parent.Evaluate());
         return childNode;
+    }
+
+    public override List<DotsAndDashesMove> GetHighlightedPath()
+    {
+        List<DotsAndDashesMove> path = new List<DotsAndDashesMove>();
+        Node currentNode = initialNode;
+        while(currentNode.HasChild())
+        {
+            path.Add(currentNode.GetBestMove());
+            currentNode = currentNode.GetChosenChild();
+        }
+        return path;
+    }
+
+    public void SetDepth(int maxDepth_)
+    {
+        maxDepth = maxDepth_;
     }
 }
