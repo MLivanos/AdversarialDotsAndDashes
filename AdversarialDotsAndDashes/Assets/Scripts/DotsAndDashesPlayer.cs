@@ -27,4 +27,9 @@ public abstract class DotsAndDashesPlayer : MonoBehaviour
     {
         return;
     }
+
+    public void Destruct()
+    {
+        Destroy(gameObject);
+    }
 }

@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject inGameUI;
     [SerializeField] private GameObject dotsAndDashesPrefab;
     [SerializeField] private GameObject[] agents;
-    private bool first;
+    private bool first = true;
     private GameObject opponent;
     private int[] shape = new int[2];
     private int depth;
@@ -24,18 +24,18 @@ public class GameManager : MonoBehaviour
     public void Play()
     {
         SwitchScreens(false);
-        //dotsAndDashesGameObject = Instantiate(dotsAndDashesPrefab);
-        //dotsAndDashesGame = dotsAndDashesGameObject.GetComponent<DotsAndDashesGame>();
-        Debug.Log(shape[0]);
-        Debug.Log(shape[1]);
-        Debug.Log(opponent);
-        Debug.Log(depth);
-        Debug.Log(first);
-
+        dotsAndDashesGameObject = Instantiate(dotsAndDashesPrefab);
+        dotsAndDashesGame = dotsAndDashesGameObject.GetComponent<DotsAndDashesGame>();
+        GameObject player1Object = first ? agents[agents.GetLength(0)-1] : opponent;
+        GameObject player2Object = !first ? agents[agents.GetLength(0)-1] : opponent;
+        dotsAndDashesGame.Configure(new Vector2Int(shape[0], shape[1]), player1Object, player2Object);
+        dotsAndDashesGame.Initialize();
     }
 
     public void Exit()
     {
+        dotsAndDashesGame.DestroyAllObjects();
+        Destroy(dotsAndDashesGameObject);
         SwitchScreens(true);
     }
 

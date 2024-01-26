@@ -11,12 +11,12 @@ public class DotsAndDashesGame : MonoBehaviour
     [SerializeField] private GameObject linePrefab;
     [SerializeField] private GameObject boxPrefab;
     private float spaceBetweenDots=2.0f;
-    private GameObject[] playersPrefab;
+    private GameObject[] playersPrefab = new GameObject[2];
     private Vector2Int shape;
-    //
-    private DotsAndDashesPlayer[] players;
+    private DotsAndDashesPlayer[] players = new DotsAndDashesPlayer[2];
     private GameObject[,] gameMatrixObjectsHorizontal;
     private GameObject[,] gameMatrixObjectsVertical;
+    private List<GameObject> dots;
     private List<GameObject> instantiatedBoxes = new List<GameObject>();
     bool[,] claimedBoxes;
     private Vector2Int playerScores = Vector2Int.zero;
@@ -34,6 +34,13 @@ public class DotsAndDashesGame : MonoBehaviour
         {
             Restart();
         }
+    }
+
+    public void Configure(Vector2Int gameShape, GameObject player1, GameObject player2)
+    {
+        shape = gameShape;
+        playersPrefab[0] = player1;
+        playersPrefab[1] = player2;
     }
 
     public void RecieveMove(DotsAndDashesMove move)
@@ -65,6 +72,7 @@ public class DotsAndDashesGame : MonoBehaviour
     {
         CreatePlayers();
         nLinesClaimed = 0;
+        dots = new List<GameObject>();
         gameMatrixObjectsHorizontal = new GameObject[shape.x - 1,shape.y];
         gameMatrixObjectsVertical = new GameObject[shape.x,shape.y - 1];
         claimedBoxes = new bool[shape.x,shape.y];
@@ -78,6 +86,7 @@ public class DotsAndDashesGame : MonoBehaviour
                 AddLine(position,i,j,false);
                 AddLine(position,i,j+1,true);
                 GameObject newDot = Instantiate(dotPrefab, position + Vector3.back, Quaternion.identity);
+                dots.Add(newDot);
             }
         }
         ClearLines(gameMatrixObjectsHorizontal);
@@ -96,7 +105,7 @@ public class DotsAndDashesGame : MonoBehaviour
         players[1].Initialize(1,this);
     }
 
-    private void Restart()
+    public void Restart()
     {
         nLinesClaimed = 0;
         turnPlayer = 1;
@@ -257,5 +266,30 @@ public class DotsAndDashesGame : MonoBehaviour
             }
         }
         return matrix;
+    }
+
+    public void DestroyAllObjects()
+    {
+        Restart();
+        players[0].Destruct();
+        players[1].Destruct();
+        DestroyMatrix(true);
+        DestroyMatrix(false);
+        foreach(GameObject dot in dots)
+        {
+            Destroy(dot);
+        }
+    }
+
+    private void DestroyMatrix(bool vertical)
+    {
+        GameObject[,] matrix = vertical ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+        for(int i=0; i<matrix.GetLength(0); i++)
+        {
+            for(int j=0; j<matrix.GetLength(1); j++)
+            {
+                Destroy(matrix[i,j]);
+            }
+        }
     }
 }
