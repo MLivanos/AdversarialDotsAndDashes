@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2164090064148808312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2164090064148808314}
+  - component: {fileID: 2164090064148808315}
+  m_Layer: 0
+  m_Name: DotsAndDashesManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2164090064148808314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164090064148808312}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2164090064148808315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164090064148808312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9729b0d6b829d44eabd93b73aa13580d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerColors:
+  - {r: 0.09743297, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0.890615, a: 1}
+  unclaimedColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
+  shape: {x: 5, y: 6}
+  dotPrefab: {fileID: 2257187544762420308, guid: 04fa11f94db304351a5324eb36e9b04f, type: 3}
+  linePrefab: {fileID: 8017340929187280312, guid: fc001a011a6a94988be8040252641602, type: 3}
+  boxPrefab: {fileID: 6029801645283580034, guid: 98b2304885953481a880e37a75878af3, type: 3}
+  spaceBetweenDots: 2
+  playersPrefab:
+  - {fileID: 2038653818080163169, guid: 2eb07781f0cca42c5bd2198dc3e05d43, type: 3}
+  - {fileID: 8256547207277319934, guid: d57b2ae932e3d4234ba75f3510643401, type: 3}
