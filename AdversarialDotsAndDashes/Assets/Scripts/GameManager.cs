@@ -80,4 +80,14 @@ public class GameManager : MonoBehaviour
     {
         first = position;
     }
+
+    public void HighLightPath()
+    {
+        dotsAndDashesGame.HighLightPath();
+    }
+
+    public void UnHighlightPath()
+    {
+        dotsAndDashesGame.UnHighlightPath();
+    }
 }

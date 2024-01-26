@@ -89,6 +89,11 @@ public class Node
         return chosenChild;
     }
 
+    public bool HasChild()
+    {
+        return (chosenChild != null);
+    }
+
     public void SetDepth(int depth_)
     {
         depth = depth_;

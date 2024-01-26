@@ -17,6 +17,7 @@ public class DotsAndDashesGame : MonoBehaviour
     private GameObject[,] gameMatrixObjectsHorizontal;
     private GameObject[,] gameMatrixObjectsVertical;
     private List<GameObject> dots;
+    private List<DotsAndDashesMove> linesOnThePath;
     private List<GameObject> instantiatedBoxes = new List<GameObject>();
     bool[,] claimedBoxes;
     private Vector2Int playerScores = Vector2Int.zero;
@@ -41,6 +42,49 @@ public class DotsAndDashesGame : MonoBehaviour
         shape = gameShape;
         playersPrefab[0] = player1;
         playersPrefab[1] = player2;
+    }
+
+    public void HighLightPath()
+    {
+        DotsAndDashesPlayer agent = players[0] is MinimaxPlayer ? players[0] : players[1]; 
+        int agentPlayerID = agent.GetPosition();
+        linesOnThePath = agent.GetHighlightedPath();
+        int totalNumberOfMoves = linesOnThePath.Count - 1;
+        float currentOpacity = 1;
+        float decrement = (float)totalNumberOfMoves / (float)(totalNumberOfMoves + 1);
+        int currentPlayer = agentPlayerID;
+        foreach(DotsAndDashesMove moveSet in linesOnThePath.GetRange(1, linesOnThePath.Count-1))
+        {
+            currentOpacity *= (decrement*decrement);
+            Debug.Log((byte)(255*currentOpacity));
+            currentPlayer = 1 - currentPlayer;
+            foreach((int, int, bool) individualMove in moveSet.GetMove())
+            {
+                GameObject[,] matrix = individualMove.Item3 ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+                GameObject line = matrix[individualMove.Item1, individualMove.Item2];
+                Renderer lineRenderer = line.GetComponent<Renderer>();
+                Color32 initialColor = playerColors[currentPlayer];
+                Color32 fadedColor = new Color32(initialColor.r, initialColor.g, initialColor.b, (byte)(255*currentOpacity));
+                lineRenderer.material.SetColor("_BaseColor", fadedColor);
+            }
+        }
+    }
+
+    public void UnHighlightPath()
+    {
+        DotsAndDashesPlayer agent = players[0] is MinimaxPlayer ? players[0] : players[1]; 
+        linesOnThePath = agent.GetHighlightedPath();
+        int totalNumberOfMoves = linesOnThePath.Count;
+        foreach(DotsAndDashesMove moveSet in linesOnThePath.GetRange(1, linesOnThePath.Count-1))
+        {
+            foreach((int, int, bool) individualMove in moveSet.GetMove())
+            {
+                GameObject[,] matrix = individualMove.Item3 ? gameMatrixObjectsVertical : gameMatrixObjectsHorizontal;
+                GameObject line = matrix[individualMove.Item1, individualMove.Item2];
+                Renderer lineRenderer = line.GetComponent<Renderer>();
+                lineRenderer.material.SetColor("_BaseColor", unclaimedColor);
+            }
+        }
     }
 
     public void RecieveMove(DotsAndDashesMove move)
@@ -201,7 +245,7 @@ public class DotsAndDashesGame : MonoBehaviour
 
         if (oppositeLine.IsClaimed() && minorLine1.IsClaimed() && minorLine2.IsClaimed())
         {
-            ClaimBox((minorLine1.transform.position + minorLine2.transform.position) / 2);
+            ClaimBox((minorLine1.transform.position + minorLine2.transform.position + Vector3.forward) / 2);
             return true;
         }
         return false;

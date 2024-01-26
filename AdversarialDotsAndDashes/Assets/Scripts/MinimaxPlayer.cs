@@ -108,4 +108,16 @@ public class MinimaxPlayer : DotsAndDashesPlayer
         childNode.SetChangeInScore(parent.Evaluate());
         return childNode;
     }
+
+    public override List<DotsAndDashesMove> GetHighlightedPath()
+    {
+        List<DotsAndDashesMove> path = new List<DotsAndDashesMove>();
+        Node currentNode = initialNode;
+        while(currentNode.HasChild())
+        {
+            path.Add(currentNode.GetBestMove());
+            currentNode = currentNode.GetChosenChild();
+        }
+        return path;
+    }
 }
