@@ -39,6 +39,11 @@ public class GameManager : MonoBehaviour
         SwitchScreens(true);
     }
 
+    public void Reset()
+    {
+        dotsAndDashesGame.Restart();
+    }
+
     private void SwitchScreens(bool title)
     {
         titleScreen.SetActive(title);
